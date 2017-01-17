@@ -1,4 +1,6 @@
 import pygame, sys
+import random as rd
+
 
 # Halllo
 
