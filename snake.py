@@ -15,24 +15,43 @@ BLUE=(0,0,139)
 
 farbenliste=[PINK,ORANGE,VIOLETTE,BLUE]
 
-#Zufallsfarbe
+CELLWIDTH = 0
+
 
 
 
 
 class Fruits:
-    def __init__(self, pos =  {'x':10, 'y':10}):
+    def __init__(self, pos =  {'x':rd.randint(0,30), 'y':rd.randint(0,30)}):
         self.koord = pos
         self.farbe = rd.randint(1, len(farbenliste) - 1)
 
     def zufallsfarbe(self):
-
         return farbenliste[self.farbe]
 
 class  Snake:
     def __init__(self):
-        self.koord={'x':1,'y':1}
+        self.körperteile = [{'x':1,'y':1}]
         self.richtung={'dx':0, 'dy':0}
+
+
+    def körper_hinzufügen(self):
+        x = self.körperteile[0]['x'] + self.richtung['dx']
+        y = self.körperteile[0]['y'] + self.richtung['dy']
+        nechst = {'x': x, 'y': y}
+        self.körperteile.insert(0,nechst)
+
+
+    def update(self):
+        x = self.körperteile[0]['x'] + self.richtung['dx']
+        y = self.körperteile[0]['y'] + self.richtung['dy']
+        nechst = {'x':x,'y':y}
+        for i in range(len(self.körperteile)):
+            tmp = self.körperteile[i]
+            self.körperteile[i] = nechst
+            nechst = tmp
+
+
 
 class Spielfeld:
     def __init__(self,groesse):
@@ -45,24 +64,29 @@ class Spielfeld:
             self.felder[i][groesse] = 1
 
 
-def makeGUI():
 
+
+
+def makeGUI():
 
     BOARD_LENGHT = 600
     BOARD_HIGHT = BOARD_LENGHT
-    FPS=10
-    CELLSIZE=20
+    FPS = 5
+    CELLSIZE = 20
 
-    assert BOARD_LENGHT%CELLSIZE==0
-    assert BOARD_HIGHT%CELLSIZE==0
-    CELLWIDTH=int(BOARD_LENGHT/CELLSIZE)
-    CELLHEIGHT=int(BOARD_HIGHT/CELLSIZE)
+    assert BOARD_LENGHT % CELLSIZE == 0
+    assert BOARD_HIGHT % CELLSIZE == 0
+    CELLWIDTH = int(BOARD_LENGHT / CELLSIZE)
+    CELLHEIGHT = int(BOARD_HIGHT / CELLSIZE)
+
+
 
     my_feld=Spielfeld(CELLWIDTH)
 
+
+
     snake=Snake()
     frucht=Fruits()
-
 
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
@@ -80,9 +104,8 @@ def makeGUI():
                 if event.key==pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-            elif event.type==pygame.KEYDOWN:
-                #snake
-                if event.key==pygame.K_a:
+
+                elif event.key==pygame.K_a:
                     if snake.richtung["dx"]==0:
                         snake.richtung["dx"]=-1
                         snake.richtung["dy"] = 0
@@ -120,15 +143,10 @@ def makeGUI():
         for y in range(0,BOARD_HIGHT,CELLSIZE):
             pygame.draw.line(DISPLAYSURF,BLACK,(0,y),(BOARD_HIGHT,y))
 
-        #schlange
-        if my_feld.felder[snake.koord['x'] + snake.richtung['dx']][snake.koord['y']+snake.richtung['dy']]== 0:
-            snake.koord['x'] = snake.koord['x'] + snake.richtung['dx']
-            snake.koord['y'] = snake.koord['y'] + snake.richtung['dy']
-        else:
-            snake.richtung['dy'] = 0
-            snake.richtung['dx'] = 0
+        snake.update()
 
-        make_rectangle_snake(snake.koord, DISPLAYSURF, CELLSIZE)
+        for körperteil in snake.körperteile:
+            make_rectangle_snake(körperteil, DISPLAYSURF, CELLSIZE)
 
         #frucht
         make_rectangle_fruit(frucht,DISPLAYSURF,CELLSIZE)
