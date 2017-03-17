@@ -13,7 +13,7 @@ ORANGE=(238,69,0)
 VIOLETTE=(139,0,139)
 BLUE=(0,0,139)
 
-farbenliste=[PINK,ORANGE,VIOLETTE,BLUE]
+farbenliste=[PINK,ORANGE,VIOLETTE,BLUE,GREEN,BLACK]
 
 CELLWIDTH = 0
 
@@ -22,15 +22,20 @@ CELLWIDTH = 0
 
 
 class Fruits:
-    def __init__(self, pos =  {'x':rd.randint(0,30), 'y':rd.randint(0,30)}):
+    def __init__(self, pos =  {'x':rd.randint(0,29), 'y':rd.randint(0,29)}):
         self.koord = pos
         self.farbe = rd.randint(1, len(farbenliste) - 1)
 
     def zufallsfarbe(self):
         return farbenliste[self.farbe]
 
-    def frucht_loeschen(self,pos =  {'x':rd.randint(0,30), 'y':rd.randint(0,30)}):
+    def frucht_neupos(self,pos = None):
+        if pos is None:
+            pos = {'x': rd.randint(0, 29), 'y': rd.randint(0, 29)}
+
         self.koord=pos
+        self.farbe = rd.randint(1, len(farbenliste) - 1)
+
 
 
 
@@ -154,13 +159,23 @@ def makeGUI():
 
         snake.update()
 
+        #Spielablauf
+
         if snake.körperteile[0]==frucht.koord:
             snake.körper_hinzufügen()
-            frucht.frucht_loeschen()
+            frucht.frucht_neupos()
+
+        for i in snake.körperteile[1:]:
+            if snake.körperteile[0]==i:
+                pygame.quit()
+                sys.exit()
+
 
 
         for körperteil in snake.körperteile:
             make_rectangle_snake(körperteil, DISPLAYSURF, CELLSIZE)
+
+
 
         #frucht
         make_rectangle_fruit(frucht,DISPLAYSURF,CELLSIZE)
