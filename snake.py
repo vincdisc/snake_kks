@@ -29,10 +29,17 @@ class Fruits:
     def zufallsfarbe(self):
         return farbenliste[self.farbe]
 
+    def frucht_loeschen(self,pos =  {'x':rd.randint(0,30), 'y':rd.randint(0,30)}):
+        self.koord=pos
+
+
+
 class  Snake:
     def __init__(self):
-        self.körperteile = [{'x':1,'y':1}]
+        self.körperteile = [{'x':rd.randint(3,27),'y':rd.randint(3,27)}]
         self.richtung={'dx':0, 'dy':0}
+
+
 
 
     def körper_hinzufügen(self):
@@ -58,10 +65,12 @@ class Spielfeld:
         self.felder = [[0 for j in range(groesse+1)] for i in range(groesse+1)]
 
         for i in range(groesse):
-            self.felder[-1][i] = 1
+            self.felder[0][i] = 1
             self.felder[groesse][i] = 1
-            self.felder[i][-1] = 1
+            self.felder[i][0] = 1
             self.felder[i][groesse] = 1
+
+
 
 
 
@@ -145,11 +154,18 @@ def makeGUI():
 
         snake.update()
 
+        if snake.körperteile[0]==frucht.koord:
+            snake.körper_hinzufügen()
+            frucht.frucht_loeschen()
+
+
         for körperteil in snake.körperteile:
             make_rectangle_snake(körperteil, DISPLAYSURF, CELLSIZE)
 
         #frucht
         make_rectangle_fruit(frucht,DISPLAYSURF,CELLSIZE)
+
+
 
 
 
@@ -170,6 +186,10 @@ def make_rectangle_fruit(frucht,display,size):
     x,y=board_to_pixel_koord(frucht.koord["x"],frucht.koord["y"],size)
     the_rect=pygame.Rect(x,y,size,size)
     pygame.draw.rect(display,frucht.zufallsfarbe(),the_rect)
+
+
+
+
 
 
 
