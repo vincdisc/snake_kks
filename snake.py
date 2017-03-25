@@ -1,6 +1,7 @@
 import pygame, sys
 import random as rd
 
+
 #Farben
 WHITE=(255,255,255)
 BLACK=(0,0,0)
@@ -62,6 +63,38 @@ class Spielfeld:
             self.felder[i][0] = 1
             self.felder[i][groesse-1] = 1
 
+
+def makemenu():
+
+    BOARD_LENGHT = 600
+    BOARD_HIGHT = BOARD_LENGHT
+    FPS = 8
+    CELLSIZE = 20
+
+    assert BOARD_LENGHT % CELLSIZE == 0
+    assert BOARD_HIGHT % CELLSIZE == 0
+    CELLWIDTH = int(BOARD_LENGHT / CELLSIZE)
+
+
+    pygame.init()
+    FPSCLOCK = pygame.time.Clock()
+    DISPLAYSURF = pygame.display.set_mode((BOARD_LENGHT, BOARD_HIGHT))
+    BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
+    pygame.display.set_caption('MENU')
+
+
+    while True:
+        DISPLAYSURF.fill(WHITE)
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.KEYDOWN:        #Definition ESC Taste
+                if event.key==pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+
+                elif event.key==pygame.K_SPACE:
+                    makeGUI()
 
 def makeGUI():
 
@@ -138,6 +171,7 @@ def makeGUI():
         for y in range(0,BOARD_HIGHT,CELLSIZE):         #zeichnet horizontale lienien
             pygame.draw.line(DISPLAYSURF,BLACK,(0,y),(BOARD_HIGHT,y))
 
+        #Rand wird gezeichnet
 
         for i in range(len(my_feld.felder)):
             for j in range(len(my_feld.felder[i])):
@@ -145,6 +179,9 @@ def makeGUI():
                     x, y = board_to_pixel_koord(i,j, CELLSIZE)
                     appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
                     pygame.draw.rect(DISPLAYSURF, BLACK, appleRect)
+
+
+        #Snake wird von Rand gestopt
 
         for i in range(len(my_feld.felder)):
             for j in range(len(my_feld.felder[i])):
@@ -178,6 +215,8 @@ def makeGUI():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
+
+
 def board_to_pixel_koord(i,j,width):
     return i*width, j*width
 
@@ -193,4 +232,4 @@ def make_rectangle_fruit(frucht,display,size):
 
 
 if __name__=="__main__":
-    makeGUI()
+    makemenu()
