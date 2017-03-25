@@ -10,13 +10,13 @@ ORANGE=(238,69,0)
 VIOLETTE=(139,0,139)
 BLUE=(0,0,139)
 
-farbenliste=[PINK,ORANGE,VIOLETTE,BLUE,GREEN,BLACK]
+farbenliste=[PINK,ORANGE,VIOLETTE,BLUE,GREEN]
 
 CELLWIDTH = 0
 
 
 class Fruits:
-    def __init__(self, pos =  {'x':rd.randint(0,29), 'y':rd.randint(0,29)}):    #Liste mit der ersten Frucht
+    def __init__(self, pos =  {'x':rd.randint(2,28), 'y':rd.randint(2,28)}):    #Liste mit der ersten Frucht
         self.koord = pos
         self.farbe = rd.randint(1, len(farbenliste) - 1)
 
@@ -56,13 +56,15 @@ class Spielfeld:
     def __init__(self,groesse):
         self.felder = [[0 for j in range(groesse+1)] for i in range(groesse+1)]         #Spielfeld
 
-        for i in range(groesse):            #hat Momentan keinen Nutzen
+        for i in range(groesse):            #hat Momentan keinen Nutze
             self.felder[0][i] = 1
-            self.felder[groesse][i] = 1
+            self.felder[groesse-1][i] = 1
             self.felder[i][0] = 1
-            self.felder[i][groesse] = 1
+            self.felder[i][groesse-1] = 1
+
 
 def makeGUI():
+
 
     BOARD_LENGHT = 600
     BOARD_HIGHT = BOARD_LENGHT
@@ -75,6 +77,8 @@ def makeGUI():
 
     my_feld=Spielfeld(CELLWIDTH)
 
+
+
     snake=Snake()
     frucht=Fruits()
 
@@ -83,6 +87,8 @@ def makeGUI():
     DISPLAYSURF = pygame.display.set_mode((BOARD_LENGHT, BOARD_HIGHT))
     BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
     pygame.display.set_caption('SNAKE')
+
+    
 
     while True:
         DISPLAYSURF.fill(WHITE)
@@ -132,9 +138,27 @@ def makeGUI():
         for y in range(0,BOARD_HIGHT,CELLSIZE):         #zeichnet horizontale lienien
             pygame.draw.line(DISPLAYSURF,BLACK,(0,y),(BOARD_HIGHT,y))
 
+
+        for i in range(len(my_feld.felder)):
+            for j in range(len(my_feld.felder[i])):
+                if my_feld.felder[i][j] == 1:
+                    x, y = board_to_pixel_koord(i,j, CELLSIZE)
+                    appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
+                    pygame.draw.rect(DISPLAYSURF, BLACK, appleRect)
+
+        for i in range(len(my_feld.felder)):
+            for j in range(len(my_feld.felder[i])):
+                if my_feld.felder[i][j] == 1:
+                    randliste={'x':i,'y':j}
+                    if randliste==snake.körperteile[0]:
+                        pygame.quit()
+                        sys.exit()
+
+
         snake.update()
 
         #Spielablauf
+
 
         if snake.körperteile[0]==frucht.koord:  #wenn eine frucht gegessen wird, wird hier eine neue frucht aufgerufen
             snake.körper_hinzufügen()
