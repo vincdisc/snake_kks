@@ -53,6 +53,7 @@ class  Snake:
             nechst = tmp
 
 
+
 class Spielfeld:
     def __init__(self,groesse):
         self.felder = [[0 for j in range(groesse+1)] for i in range(groesse+1)]         #Spielfeld
