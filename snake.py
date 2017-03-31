@@ -17,7 +17,7 @@ CELLWIDTH = 0
 
 
 class Fruits:
-    def __init__(self, pos =  {'x':rd.randint(2,28), 'y':rd.randint(2,28)}):    #Liste mit der ersten Frucht
+    def __init__(self, pos =  {'x':rd.randint(2,27), 'y':rd.randint(2,27)}):    #Liste mit der ersten Frucht
         self.koord = pos
         self.farbe = rd.randint(1, len(farbenliste) - 1)
 
@@ -26,7 +26,7 @@ class Fruits:
 
     def frucht_neupos(self,pos = None):         #funktion für eine neue frucht, wenn die verherige gefressen wurde
         if pos is None:
-            pos = {'x': rd.randint(0, 29), 'y': rd.randint(0, 29)}
+            pos = {'x': rd.randint(1, 28), 'y': rd.randint(1, 28)}
 
         self.koord=pos
         self.farbe = rd.randint(1, len(farbenliste) - 1)
@@ -57,7 +57,7 @@ class Spielfeld:
     def __init__(self,groesse):
         self.felder = [[0 for j in range(groesse+1)] for i in range(groesse+1)]         #Spielfeld
 
-        for i in range(groesse):            #hat Momentan keinen Nutze
+        for i in range(groesse):
             self.felder[0][i] = 1
             self.felder[groesse-1][i] = 1
             self.felder[i][0] = 1
@@ -94,9 +94,48 @@ def makemenu():
                     sys.exit()
 
                 elif event.key==pygame.K_SPACE:
-                    makeGUI()
+                    makegame()
 
-def makeGUI():
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+def makeend():
+
+    BOARD_LENGHT = 600
+    BOARD_HIGHT = BOARD_LENGHT
+    FPS = 8
+    CELLSIZE = 20
+
+    assert BOARD_LENGHT % CELLSIZE == 0
+    assert BOARD_HIGHT % CELLSIZE == 0
+    CELLWIDTH = int(BOARD_LENGHT / CELLSIZE)
+
+
+    pygame.init()
+    FPSCLOCK = pygame.time.Clock()
+    DISPLAYSURF = pygame.display.set_mode((BOARD_LENGHT, BOARD_HIGHT))
+    BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
+    pygame.display.set_caption('ENDE')
+
+    while True:
+        DISPLAYSURF.fill(WHITE)
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.KEYDOWN:        #Definition ESC Taste
+                if event.key==pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+
+                elif event.key==pygame.K_SPACE:
+                    makemenu()
+
+
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+
+def makegame():
 
 
     BOARD_LENGHT = 600
@@ -165,11 +204,7 @@ def makeGUI():
                         snake.richtung["dy"]=1
                         snake.richtung["dx"] = 0
 
-        for x in range(0,BOARD_LENGHT,CELLSIZE):        #zeichnet senkrechte lienien
-            pygame.draw.line(DISPLAYSURF,BLACK,(x,0),(x,BOARD_LENGHT))
 
-        for y in range(0,BOARD_HIGHT,CELLSIZE):         #zeichnet horizontale lienien
-            pygame.draw.line(DISPLAYSURF,BLACK,(0,y),(BOARD_HIGHT,y))
 
         #Rand wird gezeichnet
 
@@ -188,11 +223,18 @@ def makeGUI():
                 if my_feld.felder[i][j] == 1:
                     randliste={'x':i,'y':j}
                     if randliste==snake.körperteile[0]:
-                        pygame.quit()
-                        sys.exit()
+                        makeend()
 
 
         snake.update()
+
+        for x in range(0,BOARD_LENGHT,CELLSIZE):        #zeichnet senkrechte lienien
+            pygame.draw.line(DISPLAYSURF,BLACK,(x,0),(x,BOARD_LENGHT))
+
+        for y in range(0,BOARD_HIGHT,CELLSIZE):         #zeichnet horizontale lienien
+            pygame.draw.line(DISPLAYSURF,BLACK,(0,y),(BOARD_HIGHT,y))
+
+
 
         #Spielablauf
 
@@ -203,8 +245,8 @@ def makeGUI():
 
         for i in snake.körperteile[1:]:        # wenn die schlange mit sich selbst kollidiert esc spiel
             if snake.körperteile[0]==i:
-                pygame.quit()
-                sys.exit()
+                makeend()
+
 
         for körperteil in snake.körperteile:
             make_rectangle_snake(körperteil, DISPLAYSURF, CELLSIZE)
