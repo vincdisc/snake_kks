@@ -2,15 +2,33 @@ import pygame, sys
 import random as rd
 
 # Farben
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-GREEN = (0, 200, 0)
-PINK = (238, 18, 137)
-ORANGE = (238, 69, 0)
-VIOLETTE = (139, 0, 139)
-BLUE = (0, 0, 139)
+WHITE   = (255, 255, 255)
+BLACK   = (  0,   0,   0)
+GREEN   = (  0, 200,   0)
+PINK    = (238,  18, 137)
+ORANGE  = (238,  69,   0)
+VIOLETTE= (139,   0, 139)
+BLUE    = (  0,   0, 139)
+BLUE2   = (  0,   0, 255)   
+CYAN    = (  0, 255, 255)
+BROWN   = (139,  69,  19)
+BROWN1  = (210, 105,  30)
+GREY    = (119, 136, 153)
+GREY1   = ( 92,  92,  92)
+GREEN2  = (  0, 100,   0)
+GREEN3  = (202, 255, 112)
+GREEN4  = ( 34, 139,  34)
+GREEN5  = (124, 252,   0)
+ORANGE1 = (255, 140,   0)
+ORANGE2 = (250, 128, 114)
+RED     = (255,   0,   0)
+RED1    = (205,   0,   0)
+VIOLET1 = (255,   0, 255)
+GELB    = (255, 215,   0)
+GELB1   = (255, 255,   0)
+VIOLET2 = (178,  58, 238)
 
-farbenliste = [PINK, ORANGE, VIOLETTE, BLUE, GREEN]
+farbenliste = [PINK, ORANGE, VIOLETTE, BLUE, BLUE2, CYAN, BROWN, BROWN1, GREY, GREY1, GREEN2, GREEN3, GREEN4, GREEN5, ORANGE1, ORANGE2, RED, RED1, VIOLET1, VIOLET2, GELB, GELB1]
 
 CELLWIDTH = 0
 
