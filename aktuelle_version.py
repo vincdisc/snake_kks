@@ -1,5 +1,6 @@
 import pygame, sys
 import random as rd
+import os
 
 # Farben
 WHITE   = (255, 255, 255)
@@ -142,6 +143,9 @@ class File:
 
 
 
+
+
+
 def makemenu():
     BOARD_LENGHT = 600
     BOARD_HIGHT = BOARD_LENGHT
@@ -176,12 +180,18 @@ def makemenu():
                     pygame.quit()
                     sys.exit()
 
-                elif event.key == pygame.K_SPACE:
-                    makegame()
+
 
             elif event.type==pygame.MOUSEBUTTONDOWN:
-                spielbutton.pressed(pygame.mouse.get_pos())
-                makegame()
+                if spielbutton.pressed(pygame.mouse.get_pos()):
+                    makegame()
+
+                elif rangbutton.pressed(pygame.mouse.get_pos()):
+
+
+
+
+
 
 
 
@@ -368,7 +378,7 @@ def makegame():
 def punktespeichern(zahl):
     tabelle=File()
     name=input("Gebe deinen Namen ein:")
-    tabelle.write(name+ ": " + str(zahl) + "\n")
+    tabelle.write(name+ ":" + str(zahl) + "\n")
     tabelle.beenden()
 
 
