@@ -63,7 +63,9 @@ class Spielfeld:
             self.felder[i][0] = 1
             self.felder[i][groesse - 1] = 1
 
+
 class Button:
+
     def create_button(self, surface, color, x, y, length, height, width, text, text_color):
         surface = self.draw_button(surface, color, length, height, x, y, width)
         surface = self.write_text(surface, text, text_color, length, height, x, y)
@@ -102,6 +104,24 @@ class Button:
                 else: return False
             else: return False
         else: return False
+
+
+
+class File:
+
+        def __init__(self):
+            self.fout = open('Ergebnisse', 'a')
+
+
+        def write(self, name):
+            self.fout.write(name)
+
+        def beenden(self):
+            self.fout.close()
+
+
+
+
 
 
 def makemenu():
@@ -167,6 +187,12 @@ def makeend():
     BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
     pygame.display.set_caption('ENDE')
 
+
+
+    punktespeichern(punkte)
+
+    print("Done")
+
     while True:
         DISPLAYSURF.fill(WHITE)
 
@@ -205,6 +231,8 @@ def makegame():
 
     my_feld = Spielfeld(CELLWIDTH)
 
+
+    global punkte
     punkte=0
 
     snake = Snake()
@@ -310,8 +338,20 @@ def makegame():
         # frucht
         make_rectangle_fruit(frucht, DISPLAYSURF, CELLSIZE)
 
+
+
         pygame.display.update()
         FPSCLOCK.tick(FPS)
+
+
+
+
+
+def punktespeichern(zahl):
+    tabelle=File()
+    name=input("Gebe deinen Namen ein:")
+    tabelle.write(name+ ": " + str(zahl) + "\n")
+    tabelle.beenden()
 
 
 def board_to_pixel_koord(i, j, width):
