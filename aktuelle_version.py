@@ -129,17 +129,37 @@ class Button:
 class File:
 
         def __init__(self):
-            self.fout = open('Ergebnisse', 'a')
+            self.a=open('Ergebnisse','a')
+
+
 
 
         def write(self, name):
-            self.fout.write(name)
+
+            self.a.close()
+
+            self.fout=open('Ergebnisse','r+')
+
+            if os.stat("Ergebnisse").st_size==0:
+                self.fout.write(name)
+
+            else:
+                for line in self.fout:
+                    tmp=line.split(":")
+                    zahl=int(tmp[1])
+                    print(tmp)
+
+                    if zahl>punkte:
+                        pass
+                        print("Drin")
+                    else:
+                        print(punkte)
+                        print("im else")
+                        self.fout.write(name)
+                        break
 
         def beenden(self):
             self.fout.close()
-
-
-
 
 
 
@@ -186,7 +206,8 @@ def makemenu():
                 if spielbutton.pressed(pygame.mouse.get_pos()):
                     makegame()
 
-                elif rangbutton.pressed(pygame.mouse.get_pos()):
+                #elif rangbutton.pressed(pygame.mouse.get_pos()):
+
 
 
 
@@ -378,7 +399,9 @@ def makegame():
 def punktespeichern(zahl):
     tabelle=File()
     name=input("Gebe deinen Namen ein:")
-    tabelle.write(name+ ":" + str(zahl) + "\n")
+
+    tabelle.write(name+ ":" + str(zahl) + ":\n")
+
     tabelle.beenden()
 
 
