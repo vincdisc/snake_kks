@@ -401,3 +401,4 @@ def make_rectangle_fruit(frucht, display, size):
 
 if __name__ == "__main__":
     makegame()
+
