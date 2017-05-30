@@ -10,7 +10,7 @@ PINK    = (238,  18, 137)
 ORANGE  = (238,  69,   0)
 VIOLETTE= (139,   0, 139)
 BLUE    = (  0,   0, 139)
-BLUE2   = (  0,   0, 255)   
+BLUE2   = (  0,   0, 255)
 CYAN    = (  0, 255, 255)
 BROWN   = (139,  69,  19)
 BROWN1  = (210, 105,  30)
@@ -129,34 +129,37 @@ class Button:
 class File:
 
         def __init__(self):
-            self.a=open('Ergebnisse','a')
+            #self.a=open('Ergebnisse','a')
+            pass
 
 
 
 
-        def write(self, name):
+        def write(self, name, punkte):
 
-            self.a.close()
-
-            self.fout=open('Ergebnisse','r+')
-
-            if os.stat("Ergebnisse").st_size==0:
+            #self.a.close()
+            try:
+                self.fout=open('Ergebnisse','r+')
+            except:
+                self.fout=open('Ergebnisse','a')
                 self.fout.write(name)
-
             else:
-                for line in self.fout:
-                    tmp=line.split(":")
-                    zahl=int(tmp[1])
-                    print(tmp)
+                if os.stat("Ergebnisse").st_size==0:
+                    self.fout.write(name)
+                else:
+                    for line in self.fout:
+                        tmp=line.split(":")
+                        zahl=int(tmp[1])
+                        print(tmp)
 
-                    if zahl>punkte:
-                        pass
-                        print("Drin")
-                    else:
-                        print(punkte)
-                        print("im else")
-                        self.fout.write(name)
-                        break
+                        if zahl<punkte:
+                            pass
+                            print("Drin")
+                        else:
+                            print(punkte)
+                            print("im else")
+                            self.fout.write(name)
+                            break
 
         def beenden(self):
             self.fout.close()
@@ -166,101 +169,58 @@ class File:
 
 
 
-def makemenu():
-    BOARD_LENGHT = 600
-    BOARD_HIGHT = BOARD_LENGHT
-    FPS = 8
-    CELLSIZE = 20
+def makemenu(DISPLAYSURF):
 
-    assert BOARD_LENGHT % CELLSIZE == 0
-    assert BOARD_HIGHT % CELLSIZE == 0
-    CELLWIDTH = int(BOARD_LENGHT / CELLSIZE)
-
-    pygame.init()
-    FPSCLOCK = pygame.time.Clock()
-    DISPLAYSURF = pygame.display.set_mode((BOARD_LENGHT, BOARD_HIGHT))
-    BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
     pygame.display.set_caption('MENU')
 
+    DISPLAYSURF.fill(WHITE)
 
+    spielbutton = Button()
+    spielbutton.create_button(DISPLAYSURF, GREEN, 50, 50, 150, 50, 0, "Spiel", BLACK)
 
-    while True:
-        DISPLAYSURF.fill(WHITE)
+    rangbutton = Button()
+    rangbutton.create_button(DISPLAYSURF, GREEN, 300, 50, 150, 50, 0, "Liste", BLACK)
 
-        spielbutton = Button()
-        spielbutton.create_button(DISPLAYSURF, GREEN, 50, 50, 150, 50, 0, "Spiel", BLACK)
+    for event in pygame.event.get():
 
-        rangbutton = Button()
-        rangbutton.create_button(DISPLAYSURF, GREEN, 300, 50, 150, 50, 0, "Liste", BLACK)
-
-        for event in pygame.event.get():
-
-            if event.type == pygame.KEYDOWN:  # Definition ESC Taste
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
+        if event.type == pygame.KEYDOWN:  # Definition ESC Taste
+            if event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                sys.exit()
 
 
 
-            elif event.type==pygame.MOUSEBUTTONDOWN:
-                if spielbutton.pressed(pygame.mouse.get_pos()):
-                    makegame()
-
-                #elif rangbutton.pressed(pygame.mouse.get_pos()):
-
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if spielbutton.pressed(pygame.mouse.get_pos()):
+                return False,True
+    return True,False
 
 
 
+def makeend(DISPLAYSURF):
 
-
-
-
-
-        pygame.display.update()
-        FPSCLOCK.tick(FPS)
-
-
-def makeend():
-    BOARD_LENGHT = 600
-    BOARD_HIGHT = BOARD_LENGHT
-    FPS = 8
-    CELLSIZE = 20
-
-    assert BOARD_LENGHT % CELLSIZE == 0
-    assert BOARD_HIGHT % CELLSIZE == 0
-    CELLWIDTH = int(BOARD_LENGHT / CELLSIZE)
-
-    pygame.init()
-    FPSCLOCK = pygame.time.Clock()
-    DISPLAYSURF = pygame.display.set_mode((BOARD_LENGHT, BOARD_HIGHT))
-    BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
     pygame.display.set_caption('ENDE')
 
 
 
-    punktespeichern(punkte)
+    #punktespeichern(punkte)
 
     print("Done")
 
-    while True:
-        DISPLAYSURF.fill(WHITE)
 
-        for event in pygame.event.get():
+    DISPLAYSURF.fill(WHITE)
 
-            if event.type == pygame.KEYDOWN:  # Definition ESC Taste
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
+    for event in pygame.event.get():
 
-                elif event.key == pygame.K_SPACE:
-                    makemenu()
+        if event.type == pygame.KEYDOWN:  # Definition ESC Taste
+            if event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                sys.exit()
 
-        pygame.display.update()
-        FPSCLOCK.tick(FPS)
+            elif event.key == pygame.K_SPACE:
+                return False, True
 
-
-
-
+    return True, False
 
 
 
@@ -281,7 +241,6 @@ def makegame():
     my_feld = Spielfeld(CELLWIDTH)
 
 
-    global punkte
     punkte=0
 
     snake = Snake()
@@ -293,99 +252,118 @@ def makegame():
     BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
     pygame.display.set_caption('SNAKE')
 
+
+    isMenu = True
+
+    isEnd=False
+
+    isGame=False
+
     while True:
-        DISPLAYSURF.fill(WHITE)
 
-        for event in pygame.event.get():
+        if isMenu:
+            isMenu, isGame = makemenu(DISPLAYSURF)
 
-            if event.type == pygame.KEYDOWN:  # Definition ESC Taste
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
-
-                elif event.key == pygame.K_a:  # Steuerung schlange 1
-                    if snake.richtung["dx"] == 0:
-                        snake.richtung["dx"] = -1
-                        snake.richtung["dy"] = 0
-                    elif snake.richtung["dx"] == 1:
-                        snake.richtung["dx"] == 0
-                        snake.richtung["dy"] = 0
-
-                elif event.key == pygame.K_d:
-                    if snake.richtung["dx"] == -1:
-                        snake.richtung["dx"] = 0
-                        snake.richtung["dy"] = 0
-                    elif snake.richtung["dx"] == 0:
-                        snake.richtung["dx"] = 1
-                        snake.richtung["dy"] = 0
-
-                elif event.key == pygame.K_w:
-                    if snake.richtung["dy"] == 0:
-                        snake.richtung["dy"] = -1
-                        snake.richtung["dx"] = 0
-                    elif snake.richtung["dy"] == 1:
-                        snake.richtung["dy"] = 0
-                        snake.richtung["dx"] = 0
-
-                elif event.key == pygame.K_s:
-                    if snake.richtung["dy"] == -1:
-                        snake.richtung["dy"] = 0
-                        snake.richtung["dx"] = 0
-                    elif snake.richtung["dy"] == 0:
-                        snake.richtung["dy"] = 1
-                        snake.richtung["dx"] = 0
+        elif isEnd:
+            isEnd, isMenu = makeend(DISPLAYSURF)
 
 
-
-        # Rand wird gezeichnet
-
-        for i in range(len(my_feld.felder)):
-            for j in range(len(my_feld.felder[i])):
-                if my_feld.felder[i][j] == 1:
-                    x, y = board_to_pixel_koord(i, j, CELLSIZE)
-                    appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-                    pygame.draw.rect(DISPLAYSURF, BLACK, appleRect)
-
-        # Snake wird von Rand gestopt
-
-        for i in range(len(my_feld.felder)):
-            for j in range(len(my_feld.felder[i])):
-                if my_feld.felder[i][j] == 1:
-                    randliste = {'x': i, 'y': j}
-                    if randliste == snake.körperteile[0]:
-                        makeend()
-
-        snake.update()
-
-        for x in range(0, BOARD_LENGHT, CELLSIZE):  # zeichnet senkrechte lienien
-            pygame.draw.line(DISPLAYSURF, BLACK, (x, 0), (x, BOARD_LENGHT))
-
-        for y in range(0, BOARD_HIGHT, CELLSIZE):  # zeichnet horizontale lienien
-            pygame.draw.line(DISPLAYSURF, BLACK, (0, y), (BOARD_HIGHT, y))
-
-        # Spielablauf
-
-        punktezahl=Button()
-        punktezahl.create_button(DISPLAYSURF,WHITE,650,100,150,60,0,str(punkte),BLACK)
+        elif isGame:
+            DISPLAYSURF.fill(WHITE)
 
 
-        if snake.körperteile[
-            0] == frucht.koord:  # wenn eine frucht gegessen wird, wird hier eine neue frucht aufgerufen
-            snake.körper_hinzufügen()
-            frucht.frucht_neupos()
-            punkte+=1
-            print(punkte)
+            for event in pygame.event.get():
+
+                if event.type == pygame.KEYDOWN:  # Definition ESC Taste
+                    if event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
+
+                    elif event.key == pygame.K_a:  # Steuerung schlange 1
+                        if snake.richtung["dx"] == 0:
+                            snake.richtung["dx"] = -1
+                            snake.richtung["dy"] = 0
+                        elif snake.richtung["dx"] == 1:
+                            snake.richtung["dx"] == 0
+                            snake.richtung["dy"] = 0
+
+                    elif event.key == pygame.K_d:
+                        if snake.richtung["dx"] == -1:
+                            snake.richtung["dx"] = 0
+                            snake.richtung["dy"] = 0
+                        elif snake.richtung["dx"] == 0:
+                            snake.richtung["dx"] = 1
+                            snake.richtung["dy"] = 0
+
+                    elif event.key == pygame.K_w:
+                        if snake.richtung["dy"] == 0:
+                            snake.richtung["dy"] = -1
+                            snake.richtung["dx"] = 0
+                        elif snake.richtung["dy"] == 1:
+                            snake.richtung["dy"] = 0
+                            snake.richtung["dx"] = 0
+
+                    elif event.key == pygame.K_s:
+                        if snake.richtung["dy"] == -1:
+                            snake.richtung["dy"] = 0
+                            snake.richtung["dx"] = 0
+                        elif snake.richtung["dy"] == 0:
+                            snake.richtung["dy"] = 1
+                            snake.richtung["dx"] = 0
 
 
-        for i in snake.körperteile[1:]:  # wenn die schlange mit sich selbst kollidiert esc spiel
-            if snake.körperteile[0] == i:
-                makeend()
 
-        for körperteil in snake.körperteile:
-            make_rectangle_snake(körperteil, DISPLAYSURF, CELLSIZE)
+            # Rand wird gezeichnet
 
-        # frucht
-        make_rectangle_fruit(frucht, DISPLAYSURF, CELLSIZE)
+            for i in range(len(my_feld.felder)):
+                for j in range(len(my_feld.felder[i])):
+                    if my_feld.felder[i][j] == 1:
+                        x, y = board_to_pixel_koord(i, j, CELLSIZE)
+                        appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
+                        pygame.draw.rect(DISPLAYSURF, BLACK, appleRect)
+
+            snake.update()
+
+            for x in range(0, BOARD_LENGHT, CELLSIZE):  # zeichnet senkrechte lienien
+                pygame.draw.line(DISPLAYSURF, BLACK, (x, 0), (x, BOARD_LENGHT))
+
+            for y in range(0, BOARD_HIGHT, CELLSIZE):  # zeichnet horizontale lienien
+                pygame.draw.line(DISPLAYSURF, BLACK, (0, y), (BOARD_HIGHT, y))
+
+            # Spielablauf
+
+            punktezahl = Button()
+            punktezahl.create_button(DISPLAYSURF, WHITE, 650, 100, 150, 60, 0, str(punkte), BLACK)
+
+            if snake.körperteile[
+                0] == frucht.koord:  # wenn eine frucht gegessen wird, wird hier eine neue frucht aufgerufen
+                snake.körper_hinzufügen()
+                frucht.frucht_neupos()
+                punkte += 1
+                print(punkte)
+
+            for i in snake.körperteile[1:]:  # wenn die schlange mit sich selbst kollidiert esc spiel
+                if snake.körperteile[0] == i:
+                    makeend()
+
+            for körperteil in snake.körperteile:
+                make_rectangle_snake(körperteil, DISPLAYSURF, CELLSIZE)
+
+            # frucht
+            make_rectangle_fruit(frucht, DISPLAYSURF, CELLSIZE)
+
+            # Snake wird von Rand gestopt
+
+            for i in range(len(my_feld.felder)):
+                for j in range(len(my_feld.felder[i])):
+                    if my_feld.felder[i][j] == 1:
+                        randliste = {'x': i, 'y': j}
+                        if randliste == snake.körperteile[0]:
+                            snake = Snake()
+                            isEnd=True
+
+
+
 
 
 
@@ -422,4 +400,4 @@ def make_rectangle_fruit(frucht, display, size):
 
 
 if __name__ == "__main__":
-    makemenu()
+    makegame()
