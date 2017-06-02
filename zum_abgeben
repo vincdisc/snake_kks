@@ -2,6 +2,7 @@ import pygame, sys
 import random as rd
 import os
 
+
 # Farben
 WHITE   = (255, 255, 255)
 BLACK   = (  0,   0,   0)
@@ -164,15 +165,25 @@ def makemenu(DISPLAYSURF):
 
     DISPLAYSURF.fill(WHITE)
 
+    titel=Button()
+    titel.create_button(DISPLAYSURF,WHITE,200,50,400,100,0,"Snake",VIOLET2)
+
 
     spielbutton = Button()
-    spielbutton.create_button(DISPLAYSURF, GREEN, 50, 50, 150, 50, 0, "Spiel", BLACK)
+    spielbutton.create_button(DISPLAYSURF, GREEN, 300, 200, 200, 50, 0, "Spiel", BLACK)
 
     rangbutton = Button()
-    rangbutton.create_button(DISPLAYSURF, GREEN, 300, 50, 150, 50, 0, "Liste", BLACK)
+    rangbutton.create_button(DISPLAYSURF, GREEN, 300, 400, 200, 50, 0, "Liste", BLACK)
 
     mehrspielbutton = Button()  # neu
-    mehrspielbutton.create_button(DISPLAYSURF, GREEN, 50, 200, 150, 50, 0, "1 vs. 1", BLACK)  # neu
+    mehrspielbutton.create_button(DISPLAYSURF, GREEN, 300, 300, 200, 50, 0, "1 vs. 1", BLACK)
+
+    party=Button()
+    party.create_button(DISPLAYSURF,(rd.randint(0,255),rd.randint(0,255),rd.randint(0,255)),600,200,100,50,0,"Party",(rd.randint(0,255),rd.randint(0,255),rd.randint(0,255)))
+
+    developpers=Button()
+    developpers.create_button(DISPLAYSURF,WHITE,150,475,500,150,0,"By Arno and Vincent",(rd.randint(0,255),rd.randint(0,255),rd.randint(0,255)))
+    # neu
 
     for event in pygame.event.get():
 
@@ -185,15 +196,18 @@ def makemenu(DISPLAYSURF):
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if spielbutton.pressed(pygame.mouse.get_pos()):
-                return False,True,False,False
+                return False,True,False,False,False
+
+            elif party.pressed(pygame.mouse.get_pos()):
+                return False,True,False,False,True
 
             elif mehrspielbutton.pressed(pygame.mouse.get_pos()):
-                return False,False,True,False
+                return False,False,True,False,False
 
             elif rangbutton.pressed(pygame.mouse.get_pos()):
-                return False,False,False,True
+                return False,False,False,True,False
 
-    return True,False,False,False
+    return True,False,False,False,False
 
 
 
@@ -248,6 +262,8 @@ def makegame():
     punkte=0
     punkte2=0
 
+    gocrazy=False
+
     snake = Snake()
     snake2=Snake()
     frucht = Fruits()
@@ -272,7 +288,7 @@ def makegame():
     while True:
 
         if isMenu:
-            isMenu, isGame, is1vs1, isListe = makemenu(DISPLAYSURF)
+            isMenu, isGame, is1vs1, isListe, gocrazy = makemenu(DISPLAYSURF)
 
         elif isEnd:
             isEnd, isMenu = makeend(DISPLAYSURF,punkte)
@@ -284,7 +300,10 @@ def makegame():
 
 
         elif isGame:
-            DISPLAYSURF.fill(WHITE)
+            if not gocrazy:
+                DISPLAYSURF.fill(WHITE)
+            else:
+                DISPLAYSURF.fill((rd.randint(0,255),rd.randint(0,255),rd.randint(0,255)))
 
 
             for event in pygame.event.get():
@@ -326,7 +345,10 @@ def makegame():
                             snake.richtung["dy"] = 1
                             snake.richtung["dx"] = 0
 
-
+            if not gocrazy:
+                farbe = WHITE
+            else:
+                farbe = (rd.randint(0, 255), rd.randint(0, 255), rd.randint(0, 255))
 
             # Rand wird gezeichnet
 
@@ -335,21 +357,22 @@ def makegame():
                     if my_feld.felder[i][j] == 1:
                         x, y = board_to_pixel_koord(i, j, CELLSIZE)
                         appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-                        pygame.draw.rect(DISPLAYSURF, BLACK, appleRect)
+                        pygame.draw.rect(DISPLAYSURF, farbe, appleRect)
 
             snake.update()
 
             for x in range(0, BOARD_LENGHT, CELLSIZE):  # zeichnet senkrechte lienien
-                pygame.draw.line(DISPLAYSURF, BLACK, (x - 1, 0), (x - 1, BOARD_LENGHT))
-                pygame.draw.line(DISPLAYSURF, BLACK, (600, 0), (600, BOARD_LENGHT))
+                pygame.draw.line(DISPLAYSURF, farbe, (x - 1, 0), (x - 1, BOARD_LENGHT))
+                pygame.draw.line(DISPLAYSURF, farbe, (600, 0), (600, BOARD_LENGHT))
 
             for y in range(0, BOARD_HIGHT, CELLSIZE):  # zeichnet horizontale lienien
-                pygame.draw.line(DISPLAYSURF, BLACK, (0, y - 1), (BOARD_HIGHT, y - 1))
+                pygame.draw.line(DISPLAYSURF, farbe, (0, y - 1), (BOARD_HIGHT, y - 1))
 
             # Spielablauf
 
+
             punktezahl = Button()
-            punktezahl.create_button(DISPLAYSURF, WHITE, 650, 100, 150, 60, 0, str(punkte), BLACK)
+            punktezahl.create_button(DISPLAYSURF, farbe, 650, 100, 150, 60, 0, str(punkte), BLACK)
 
             if snake.körperteile[
                 0] == frucht.koord:  # wenn eine frucht gegessen wird, wird hier eine neue frucht aufgerufen
@@ -535,7 +558,10 @@ def makegame():
                 if snake2.körperteile[0] == i:
                     snake = Snake()
                     snake2 = Snake()
+                    punkte = 0
+                    punkte2 = 0
                     isEnd = True
+
             for i in snake2.körperteile[0:]:
                 if snake.körperteile[0] == i:
                     snake = Snake()
