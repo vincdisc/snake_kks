@@ -1,6 +1,22 @@
 import pygame, sys
 import random as rd
-import os
+
+#Willkommen bei Snake, by Arno und Vincent
+
+
+#########ein paar wichtige Infos##############
+
+# 1. Die Rangliste kann erst geöffnet werden, wenn mindestens 3 mal etwas gespeichert wurde
+
+# 2. Partymodus verursacht Augenkrebs
+
+# 3. Mit ESC unterbricht man das Programm
+
+# 4. Ansonsten sollte alles funktionieren
+
+##############################################
+
+
 
 
 # Farben
@@ -30,6 +46,7 @@ GELB    = (255, 215,   0)
 GELB1   = (255, 255,   0)
 VIOLET2 = (178,  58, 238)
 
+
 farbenliste = [PINK, ORANGE, VIOLETTE, BLUE, BLUE2, BROWN, BROWN1, GREY, GREY1, GREEN2, GREEN3, GREEN4, GREEN5, ORANGE1, ORANGE2, RED, RED1, VIOLET1, VIOLET2, GELB, GELB1]
 
 CELLWIDTH = 0
@@ -40,10 +57,11 @@ class Fruits:
         self.koord = pos
         self.farbe = rd.randint(1, len(farbenliste) - 1)
 
-    def zufallsfarbe(self):  # Zufällige farbe der Frucht
+    def zufallsfarbe(self):# Zufällige farbe der Frucht
+
         return farbenliste[self.farbe]
 
-    def frucht_neupos(self, pos=None):  # funktion für eine neue frucht, wenn die verherige gefressen wurde
+    def frucht_neupos(self, pos=None):  # funktion für eine neue frucht, wenn die vorherige gefressen wurde
         if pos is None:
             pos = {'x': rd.randint(3, 26), 'y': rd.randint(3, 26)}
 
@@ -86,6 +104,8 @@ class Spielfeld:
 
 class Button:
 
+    #Klasse um Buttons zu erstellen und Texte im Feld zu plazieren
+
     def create_button(self, surface, color, x, y, length, height, width, text, text_color):
         surface = self.draw_button(surface, color, length, height, x, y, width)
         surface = self.write_text(surface, text, text_color, length, height, x, y)
@@ -118,7 +138,7 @@ class Button:
             if mouse[1] > self.rect.topleft[1]:
                 if mouse[0] < self.rect.bottomright[0]:
                     if mouse[1] < self.rect.bottomright[1]:
-                        print ("Some button was pressed!")
+
                         return True
                     else: return False
                 else: return False
@@ -173,7 +193,7 @@ def makemenu(DISPLAYSURF):
     spielbutton.create_button(DISPLAYSURF, GREEN, 300, 200, 200, 50, 0, "Spiel", BLACK)
 
     rangbutton = Button()
-    rangbutton.create_button(DISPLAYSURF, GREEN, 300, 400, 200, 50, 0, "Liste", BLACK)
+    rangbutton.create_button(DISPLAYSURF, GREEN, 300, 400, 200, 50, 0, "Tabelle", BLACK)
 
     mehrspielbutton = Button()  # neu
     mehrspielbutton.create_button(DISPLAYSURF, GREEN, 300, 300, 200, 50, 0, "1 vs. 1", BLACK)
@@ -183,7 +203,7 @@ def makemenu(DISPLAYSURF):
 
     developpers=Button()
     developpers.create_button(DISPLAYSURF,WHITE,150,475,500,150,0,"By Arno and Vincent",(rd.randint(0,255),rd.randint(0,255),rd.randint(0,255)))
-    # neu
+
 
     for event in pygame.event.get():
 
@@ -193,7 +213,7 @@ def makemenu(DISPLAYSURF):
                 sys.exit()
 
 
-
+        #Funktionen der Buttons
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if spielbutton.pressed(pygame.mouse.get_pos()):
                 return False,True,False,False,False
@@ -212,6 +232,8 @@ def makemenu(DISPLAYSURF):
 
 
 def makeend(DISPLAYSURF,punkte):
+
+    #Endbilschirm, mit der Möglichkeit, seine Punkte in der Konsole zu speichern. Man muss aber meht als 0 Punkte haben
 
     pygame.display.set_caption('ENDE')
     DISPLAYSURF.fill(WHITE)
@@ -347,8 +369,11 @@ def makegame():
 
             if not gocrazy:
                 farbe = WHITE
+                farbe1=BLACK
+
             else:
                 farbe = (rd.randint(0, 255), rd.randint(0, 255), rd.randint(0, 255))
+                farbe1=(rd.randint(0, 255), rd.randint(0, 255), rd.randint(0, 255))
 
             # Rand wird gezeichnet
 
@@ -357,16 +382,16 @@ def makegame():
                     if my_feld.felder[i][j] == 1:
                         x, y = board_to_pixel_koord(i, j, CELLSIZE)
                         appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-                        pygame.draw.rect(DISPLAYSURF, farbe, appleRect)
+                        pygame.draw.rect(DISPLAYSURF, farbe1, appleRect)
 
             snake.update()
 
             for x in range(0, BOARD_LENGHT, CELLSIZE):  # zeichnet senkrechte lienien
-                pygame.draw.line(DISPLAYSURF, farbe, (x - 1, 0), (x - 1, BOARD_LENGHT))
-                pygame.draw.line(DISPLAYSURF, farbe, (600, 0), (600, BOARD_LENGHT))
+                pygame.draw.line(DISPLAYSURF, farbe1, (x - 1, 0), (x - 1, BOARD_LENGHT))
+                pygame.draw.line(DISPLAYSURF, farbe1, (600, 0), (600, BOARD_LENGHT))
 
             for y in range(0, BOARD_HIGHT, CELLSIZE):  # zeichnet horizontale lienien
-                pygame.draw.line(DISPLAYSURF, farbe, (0, y - 1), (BOARD_HIGHT, y - 1))
+                pygame.draw.line(DISPLAYSURF, farbe1, (0, y - 1), (BOARD_HIGHT, y - 1))
 
             # Spielablauf
 
@@ -575,6 +600,7 @@ def makegame():
 
             for körperteil in snake2.körperteile:
                 make_rectangle_snake(körperteil, DISPLAYSURF, CELLSIZE, CYAN)
+
             # frucht
             make_rectangle_fruit(frucht, DISPLAYSURF, CELLSIZE)
 
@@ -587,6 +613,9 @@ def makegame():
 
 
 def makelist(DISPLAYSURF):
+
+    #Dient dazu die Liste zu öffnen und die ERgebnisse auf dem Display zu zeigen
+
     pygame.display.set_caption('LISTE')
 
     DISPLAYSURF.fill(WHITE)
@@ -596,15 +625,19 @@ def makelist(DISPLAYSURF):
     dritterplatz=Button()
     returnbutton=Button()
 
+
+
     fhand = open("Ergebnisse","r+")
     p_liste = []
+
     for i in fhand:
         p_liste.append(i)
 
     rangliste=[]
-    rangliste.append(p_liste[0])
-    rangliste.append(p_liste[1])
-    rangliste.append(p_liste[2])
+
+    for i in range(0,3):
+        rangliste.append(p_liste[i])
+
 
     neu=[]
 
@@ -644,6 +677,7 @@ def makelist(DISPLAYSURF):
 
 
 def punktespeichern(zahl):
+
     # tabelle=File()
     # name=input("Gebe deinen Namen ein:")
     #
@@ -652,6 +686,10 @@ def punktespeichern(zahl):
     # tabelle.beenden()
 
     name = input("Gebe deinen Namen ein:")
+
+    fhand=open("Ergebnisse","a")
+    fhand.close()
+
     fhand = open("Ergebnisse","r+")
     p_liste = []
     for i in fhand:
