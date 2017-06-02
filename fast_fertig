@@ -29,7 +29,7 @@ GELB    = (255, 215,   0)
 GELB1   = (255, 255,   0)
 VIOLET2 = (178,  58, 238)
 
-farbenliste = [PINK, ORANGE, VIOLETTE, BLUE, BLUE2, CYAN, BROWN, BROWN1, GREY, GREY1, GREEN2, GREEN3, GREEN4, GREEN5, ORANGE1, ORANGE2, RED, RED1, VIOLET1, VIOLET2, GELB, GELB1]
+farbenliste = [PINK, ORANGE, VIOLETTE, BLUE, BLUE2, BROWN, BROWN1, GREY, GREY1, GREEN2, GREEN3, GREEN4, GREEN5, ORANGE1, ORANGE2, RED, RED1, VIOLET1, VIOLET2, GELB, GELB1]
 
 CELLWIDTH = 0
 
@@ -200,26 +200,18 @@ def makemenu(DISPLAYSURF):
 def makeend(DISPLAYSURF,punkte):
 
     pygame.display.set_caption('ENDE')
-
-
-
-
     DISPLAYSURF.fill(WHITE)
 
+    weiterbutton = Button()
+    weiterbutton.create_button(DISPLAYSURF, WHITE, 50, 300, 700, 300, 0, "Weiter spielen mit Space Taste", BLACK)
+    pygame.display.update()
 
-
-    if punkte!=0:
-        speicherkommentar=Button()
-        speicherkommentar.create_button(DISPLAYSURF,GREEN,200,200,400,200,0,"Name in Console",BLACK)
+    if punkte != 0:
+        speicherkommentar = Button()
+        speicherkommentar.create_button(DISPLAYSURF, WHITE, 200, 50, 400, 200, 0, "Name in Console ", BLACK)
         pygame.display.update()
 
         punktespeichern(punkte)
-
-
-
-
-
-
 
 
     for event in pygame.event.get():
@@ -348,10 +340,11 @@ def makegame():
             snake.update()
 
             for x in range(0, BOARD_LENGHT, CELLSIZE):  # zeichnet senkrechte lienien
-                pygame.draw.line(DISPLAYSURF, BLACK, (x, 0), (x, BOARD_LENGHT))
+                pygame.draw.line(DISPLAYSURF, BLACK, (x - 1, 0), (x - 1, BOARD_LENGHT))
+                pygame.draw.line(DISPLAYSURF, BLACK, (600, 0), (600, BOARD_LENGHT))
 
             for y in range(0, BOARD_HIGHT, CELLSIZE):  # zeichnet horizontale lienien
-                pygame.draw.line(DISPLAYSURF, BLACK, (0, y), (BOARD_HIGHT, y))
+                pygame.draw.line(DISPLAYSURF, BLACK, (0, y - 1), (BOARD_HIGHT, y - 1))
 
             # Spielablauf
 
@@ -494,18 +487,20 @@ def makegame():
             snake.update()
 
             for x in range(0, BOARD_LENGHT, CELLSIZE):  # zeichnet senkrechte lienien
-                pygame.draw.line(DISPLAYSURF, BLACK, (x, 0), (x, BOARD_LENGHT))
+                pygame.draw.line(DISPLAYSURF, BLACK, (x-1, 0), (x-1, BOARD_LENGHT))
+                pygame.draw.line(DISPLAYSURF,BLACK, (600,0), (600,BOARD_LENGHT))
+
 
             for y in range(0, BOARD_HIGHT, CELLSIZE):  # zeichnet horizontale lienien
-                pygame.draw.line(DISPLAYSURF, BLACK, (0, y), (BOARD_HIGHT, y))
+                pygame.draw.line(DISPLAYSURF, BLACK, (0, y-1), (BOARD_HIGHT, y-1))
 
             # Spielablauf
 
             punktezahl = Button()
-            punktezahl.create_button(DISPLAYSURF, WHITE, 650, 100, 150, 60, 0, str(punkte), BLACK)
+            punktezahl.create_button(DISPLAYSURF, WHITE, 650, 100, 150, 60, 0, str(punkte), GREEN)
 
             punktezahl2 = Button()
-            punktezahl2.create_button(DISPLAYSURF, WHITE, 650, 300, 150, 60, 0, str(punkte2), BLACK)
+            punktezahl2.create_button(DISPLAYSURF, WHITE, 650, 300, 150, 60, 0, str(punkte2), CYAN)
 
             if snake.körperteile[
                 0] == frucht.koord:  # wenn eine frucht gegessen wird, wird hier eine neue frucht aufgerufen
@@ -652,13 +647,13 @@ def board_to_pixel_koord(i, j, width):
 
 def make_rectangle_snake(dict, display, size,color):
     x, y = board_to_pixel_koord(dict["x"], dict["y"], size)
-    the_rect = pygame.Rect(x, y, size, size)
+    the_rect = pygame.Rect(x, y, size-1, size-1)
     pygame.draw.rect(display, color, the_rect)
 
 
 def make_rectangle_fruit(frucht, display, size):
     x, y = board_to_pixel_koord(frucht.koord["x"], frucht.koord["y"], size)
-    the_rect = pygame.Rect(x, y, size, size)
+    the_rect = pygame.Rect(x, y, size-1, size-1)
     pygame.draw.rect(display, frucht.zufallsfarbe(), the_rect)
 
 
